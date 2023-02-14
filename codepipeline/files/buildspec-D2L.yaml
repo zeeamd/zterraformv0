@@ -39,7 +39,7 @@ phases:
       # - command
   post_build:
     commands:
-      - aws lambda update-function-code --function-name  v0 --s3-bucket cpuse1 --s3-key Build.zip
+      - aws lambda update-function-code --function-name  v0 --s3-bucket cpuse1 --s3-key tfbuild.zip
       # - command
 #reports:
   #report-name-or-arn:
