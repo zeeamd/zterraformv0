@@ -18,6 +18,15 @@ resource "aws_codebuild_project" "codebuild-project-v0" {
   }
 }
 
+data "template_file" "deploy_script" {
+  template = file("files/buildspec-D2L.yaml.tpl")
+  vars = {
+    lambda_name     = var.lambda2update
+    artifact_bucket = var.cpbucket
+    artifact        = var.deploys3objectkey
+  }
+}
+
 resource "aws_codebuild_project" "codebuild-project-v1" {
   name          = var.cbnamev1
   build_timeout = "5"
@@ -35,6 +44,6 @@ resource "aws_codebuild_project" "codebuild-project-v1" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = file("files/buildspec-D2L.yaml")
+    buildspec = data.template_file.deploy_script.rendered
   }
 }

@@ -39,7 +39,7 @@ phases:
       # - command
   post_build:
     commands:
-      - aws lambda update-function-code --function-name  v0 --s3-bucket tfcpcbv0 --s3-key tfbuild.zip
+      - aws lambda update-function-code --function-name ${lambda_name} --s3-bucket ${artifact_bucket} --s3-key ${artifact}
       # - command
 #reports:
   #report-name-or-arn:
