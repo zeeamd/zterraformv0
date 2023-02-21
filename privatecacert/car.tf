@@ -1,4 +1,4 @@
-resource "aws_acmpca_certificate_authority" "acmpcar" {
+resource "aws_acmpca_certificate_authority" "root" {
   certificate_authority_configuration {
     key_algorithm     = "RSA_4096"
     signing_algorithm = "SHA512WITHRSA"
@@ -12,8 +12,8 @@ resource "aws_acmpca_certificate_authority" "acmpcar" {
   permanent_deletion_time_in_days = 7
 }
 
-resource "aws_acmpca_permission" "acmpap" {
-  certificate_authority_arn = aws_acmpca_certificate_authority.acmpcar.arn
+resource "aws_acmpca_permission" "root" {
+  certificate_authority_arn = aws_acmpca_certificate_authority.root.arn
   actions                   = ["IssueCertificate", "GetCertificate", "ListPermissions"]
   principal                 = "acm.amazonaws.com"
 }
@@ -33,7 +33,7 @@ resource "aws_acmpca_permission" "acmpap" {
 #}
 
 #resource "aws_acmpca_certificate" "acmpac" {
-#  certificate_authority_arn   = aws_acmpca_certificate_authority.acmpcar.arn
+#  certificate_authority_arn   = aws_acmpca_certificate_authority.root.arn
 #  certificate_signing_request = tls_cert_request.csr.cert_request_pem
 #  signing_algorithm           = "SHA256WITHRSA"
 #  validity {
@@ -44,21 +44,21 @@ resource "aws_acmpca_permission" "acmpap" {
 
 data "aws_partition" "current" {}
 
-resource "aws_acmpca_certificate" "acmpac" {
-  certificate_authority_arn   = aws_acmpca_certificate_authority.acmpcar.arn
-  certificate_signing_request = aws_acmpca_certificate_authority.acmpcar.certificate_signing_request
+resource "aws_acmpca_certificate" "root" {
+  certificate_authority_arn   = aws_acmpca_certificate_authority.root.arn
+  certificate_signing_request = aws_acmpca_certificate_authority.root.certificate_signing_request
   signing_algorithm           = "SHA512WITHRSA"
 
   template_arn = "arn:${data.aws_partition.current.partition}:acm-pca:::template/RootCACertificate/V1"
 
   validity {
     type  = "YEARS"
-    value = 1
+    value = 3
   }
 }
 
-resource "aws_acmpca_certificate_authority_certificate" "acmpai" {
-  certificate_authority_arn = aws_acmpca_certificate_authority.acmpcar.arn
-  certificate       = aws_acmpca_certificate.acmpac.certificate
-  certificate_chain = aws_acmpca_certificate.acmpac.certificate_chain
+resource "aws_acmpca_certificate_authority_certificate" "root" {
+  certificate_authority_arn = aws_acmpca_certificate_authority.root.arn
+  certificate       = aws_acmpca_certificate.root.certificate
+  certificate_chain = aws_acmpca_certificate.root.certificate_chain
 }
