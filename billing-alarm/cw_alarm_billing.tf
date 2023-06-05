@@ -1,18 +1,20 @@
+data "aws_caller_identity" "current" {}
+
 #billing alarm
 resource "aws_cloudwatch_metric_alarm" "millin_alarm" {
-  alarm_name          = "account-billing-alarm-v0"
+  alarm_name          = "aws-account-billing-alarm-v0"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "1"
   metric_name         = "EstimatedCharges"
   namespace           = "AWS/Billing"
-  #period              = "28800"
-  period              = "60"
+  #period 6 hrs
+  period              = "21600"
   statistic           = "Maximum"
+  #amount at which to trigger
   threshold           = 1
-  #alarm_actions       = var.create_sns_topic ? concat([aws_sns_topic.sns_alert_topic[0].arn], var.sns_topic_arns) : var.sns_topic_arns
 
   dimensions = {
-    currency       = "usd"
-    #linked_account = var.aws_account_id
+    Currency      = "USD"
+    LinkedAccount = data.aws_caller_identity.current.account_id
   }
 }
