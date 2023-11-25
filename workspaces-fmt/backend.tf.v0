@@ -1,0 +1,10 @@
+## sample - remote
+terraform {
+  backend "s3" {
+    region         = "us-east-1"
+    profile        = "default"
+    bucket         = "s3-tf-state-us-east-1"
+    key            = "app/terraform.tfstate"
+    dynamodb_table = "tf-state"
+  }
+}
