@@ -6,9 +6,7 @@
             "properties": {
                 "metrics": ${jsonencode(v.metric)},
                 "region": "${v.region}",
-                %{ if k == "stacked" }
-                "${k}": ${v.stacked},
-                %{ endif }
+                "stacked": ${v.stacked},
                 "title": "${v.title}",
                 "view": "${v.view}"
             }
