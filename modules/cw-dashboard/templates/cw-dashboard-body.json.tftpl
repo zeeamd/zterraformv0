@@ -1,0 +1,26 @@
+{
+    "widgets": [
+        %{ for k,v in "${widgets}" }
+        {
+            "type": "metric",
+            "properties": {
+                "metrics": ${jsonencode(v.metric)},
+                "region": "${v.region}",
+                %{ if k == "stacked" }
+                "${k}": ${v.stacked},
+                %{ endif }
+                "title": "${v.title}",
+                "view": "${v.view}"
+            }
+        },
+        %{ endfor }
+       {
+            "type": "text",
+            "width": 5,
+            "height": 1,
+            "properties": {
+                "markdown": "static block to avoid last comma when formin json template"
+            }
+        }
+    ]
+}
